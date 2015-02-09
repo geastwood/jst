@@ -10,3 +10,9 @@
 * each occupies an folder under `suit`
 * each suit should have an entry in `suits.json`
 
+# Suits
+
+* capitalize
+* polyfill of Object.create
+* splat
+* unsplat
