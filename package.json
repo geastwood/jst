@@ -1,0 +1,20 @@
+{
+  "name": "jst",
+  "version": "0.0.1",
+  "description": "JavaScript Training with Unit Tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "training",
+    "tutor"
+  ],
+  "author": "Fei Liu <liu.feiwood@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.6.0",
+    "inquirer": "^0.8.0",
+    "q": "^1.1.2"
+  }
+}
