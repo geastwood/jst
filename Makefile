@@ -7,14 +7,13 @@ PACKAGEDIR = $(LIBDIR)/$(PACKAGE)
 
 base: clean
 	@mkdir -p $(PACKAGEDIR)
-	@echo "PACKAGE EXTRACTED TO: \""$(PACKAGEDIR)\"
 	@cp -r * $(PACKAGEDIR)
 	@cd $(PACKAGEDIR); npm install
-	@chmod a+x $(PACKAGEDIR)/jst.js
-	@ln -s $(PACKAGEDIR)/jst.js $(BINDIR)/$(PACKAGE)
+	@chmod a+x $(PACKAGEDIR)/$(PACKAGE).js
+	@ln -s $(PACKAGEDIR)/$(PACKAGE).js $(BINDIR)/$(PACKAGE)
+	@echo "Done!"
 
 clean:
-	@echo 'Remove old packages and link'
 	@rm -Rf $(PACKAGEDIR)
 	@rm -Rf $(BINDIR)/$(PACKAGE)
 
