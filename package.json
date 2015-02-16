@@ -15,7 +15,9 @@
   "dependencies": {
     "commander": "^2.6.0",
     "inquirer": "^0.8.0",
-    "q": "^1.1.2"
+    "lodash": "^3.2.0",
+    "q": "^1.1.2",
+    "wrench": "^1.5.8"
   },
   "devDependencies": {},
   "repository": {
