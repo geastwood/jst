@@ -62,7 +62,7 @@ var runSuit = function(filepath, suit) {
     content = fs.readFileSync(filepath, 'utf8');
 
     content = 'var _ = require(\'./vendor/lodash\');' + '\n' + content;
-    wrench.copyDirSyncRecursive(path.join(__dirname, 'suit', suit), targetPath);
+    wrench.copyDirSyncRecursive(path.join(__dirname, 'suit', suit.getPath()), targetPath);
     fs.writeFileSync(path.join(targetPath, 'check.js'), content);
 
     addLib(targetPath);

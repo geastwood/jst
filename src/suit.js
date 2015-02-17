@@ -36,7 +36,16 @@ module.exports = {
      */
     getDefinition: function(name) {
         return this.getDefByName(name).then(function(def) {
-            return def[0].path;
+
+            // mixins
+            return _.assign(def, {
+                getPath: function() {
+                    return this[0].path;
+                },
+                getTags: function() {
+                    return this[0].tag.join(', ');
+                }
+            });
         }).catch(function(err) {
             throw new Error(err);
         });
