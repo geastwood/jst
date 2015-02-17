@@ -30,6 +30,7 @@ module.exports = {
 
         return defer.promise;
     },
+
     /**
      * @param name
      * @returns {*|Rx.IPromise<R>}
@@ -38,6 +39,7 @@ module.exports = {
         return this.getDefByName(name).then(function(def) {
 
             // mixins
+            // TODO, handle array syntax
             return _.assign(def, {
                 getPath: function() {
                     return this[0].path;
