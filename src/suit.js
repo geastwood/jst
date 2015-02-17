@@ -1,5 +1,5 @@
 var Q = require('q');
-var fs = require('fs');
+var _ = require('lodash');
 
 var definition = require('../suit/suits.json');
 
@@ -14,5 +14,31 @@ var getSuitNames = function() {
 };
 
 module.exports = {
-    getSuitNames: getSuitNames
+    getSuitNames: getSuitNames,
+    getDefByName: function(name) {
+        var defer = Q.defer(), rst;
+
+        rst = getSuits().filter(function(suit) {
+            return suit.name === name;
+        });
+
+        if (rst.length) {
+            defer.resolve(rst);
+        } else {
+            defer.reject('No suit with name "' + name + '" is found.');
+        }
+
+        return defer.promise;
+    },
+    /**
+     * @param name
+     * @returns {*|Rx.IPromise<R>}
+     */
+    getDefinition: function(name) {
+        return this.getDefByName(name).then(function(def) {
+            return def[0].path;
+        }).catch(function(err) {
+            throw new Error(err);
+        });
+    }
 };

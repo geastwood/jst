@@ -5,5 +5,6 @@ module.exports.api = function(test) {
 };
 module.exports.capitalize = function(test) {
     test.deepEqual('Google', src.capitalize('google'), 'Google');
+    test.deepEqual('GOOGLE', src.capitalize('GOOGLE'), 'GOOGLE');
     test.done();
 };

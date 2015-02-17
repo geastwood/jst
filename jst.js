@@ -37,20 +37,37 @@ var getFileRealPath = function(filepath) {
 var getSuit = function(suit) {
     return getSuitName().then(function(data) {
         return data.suitName;
+    }).then(function(suitName) {
+        return Suit.getDefinition(suitName);
     });
 };
 
-var runSuit = function(filepath, suit) {
-    var fs = require('fs'), tmp = require('os').tmpDir(), tmpFolder = String(Date.now()), path = require('path'),
-        wrench = require('wrench'), targetPath = path.join(tmp, tmpFolder);
-    var content = fs.readFileSync(filepath, 'utf8');
-    console.log(content);
-    //content = 'var _ = require(\'lodash\');' + '\n' + content;
+// TODO
+var addLib = function(folder) {
+    var wrench = require('wrench'), path = require('path'), fs = require('fs');
+    wrench.mkdirSyncRecursive(path.join(folder, 'vendor'));
+    var lodash = fs.readFileSync(path.join(__dirname, 'node_modules', 'lodash', 'index.js'), 'utf8');
+    fs.writeFileSync(path.join(folder, 'vendor', 'lodash.js'), lodash);
+};
 
-    wrench.copyDirSyncRecursive(path.join(__dirname, '/suit/capitalize/'), targetPath);
+var runSuit = function(filepath, suit) {
+    var fs = require('fs'),
+        tmp = require('os').tmpDir(),
+        tmpFolder = String(Date.now()),
+        path = require('path'),
+        wrench = require('wrench'),
+        targetPath = path.join(tmp, tmpFolder),
+        content;
+
+    content = fs.readFileSync(filepath, 'utf8');
+
+    content = 'var _ = require(\'./vendor/lodash\');' + '\n' + content;
+    wrench.copyDirSyncRecursive(path.join(__dirname, 'suit', suit), targetPath);
     fs.writeFileSync(path.join(targetPath, 'check.js'), content);
 
-    var child = require('child_process').exec('nodeunit ' + path.join(targetPath, 'test'), function(stdin, stdout) {
+    addLib(targetPath);
+
+    require('child_process').exec('nodeunit ' + path.join(targetPath, 'test'), function(stdin, stdout) {
         console.log(stdout);
         wrench.rmdirSyncRecursive(targetPath);
     });
