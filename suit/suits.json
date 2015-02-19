@@ -23,6 +23,14 @@
             "level": "Basic",
             "author": ["Fei Liu"],
             "path": "unsplat"
+        },
+        {
+            "name": "contrary",
+            "description": "A function that accepts a predicate and returns an predicate is contrary to original one",
+            "tag": ["function", "Predicate", "Closure"],
+            "level": "Basic",
+            "author": ["Fei Liu"],
+            "path": "contrary"
         }
     ]
 }
