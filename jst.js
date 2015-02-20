@@ -73,9 +73,31 @@ var runSuit = function(filepath, suit) {
     });
 };
 
+var describeSuit = function(suit) {
+    var fs = require('fs'),
+        path = require('path'),
+        filePath = path.join(__dirname, 'suit', suit.getPath(), 'description.txt'),
+        fileExist = fs.existsSync(filePath);
+
+    if (fileExist) {
+        fs.readFile(filePath, 'utf8', function(err, data) {
+            if (err) {
+                throw err;
+            }
+            console.log('\n');
+            console.log(data);
+            console.log('\n');
+        });
+    } else {
+        console.log('\n');
+        console.log('No description for this test suit');
+        console.log('\n');
+    }
+};
+
 program.command('check <file>')
     .description('check a file against a suit')
-    .option('-s --suit <suit>', 'specify suit')
+    .option('-s --suit <suit>', 'specify suit') // currently not working
     .action(function(file, options) {
 
         var fullFilePath;
@@ -83,7 +105,6 @@ program.command('check <file>')
         // domain logic
         getFileRealPath(file).then(function(filepath) {
             if (filepath === false) {
-                console.log('fei');
                 throw new Error('File does not exist.');
             }
             fullFilePath = filepath;
@@ -92,6 +113,14 @@ program.command('check <file>')
             runSuit(fullFilePath, suit);
         }).catch(function(err) {
             console.log(err);
+        });
+    });
+
+program.command('describe')
+    .description('describe a suit, if it has a description.txt file')
+    .action(function() {
+        getSuit().then(function(suit) {
+            describeSuit(suit);
         });
     });
 

@@ -1,0 +1,11 @@
+A function that take a predicate and return a function which when calling return the contrary result of the original predicate.
+
+E.g. If there is a function
+
+function isBiggerThan5(num) {
+    return num > 5;
+}
+
+var smallOrEqualTo5 = contrary(isBiggerThan5);
+
+smallOrEqualTo5(3); // return true
