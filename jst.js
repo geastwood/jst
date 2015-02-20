@@ -4,6 +4,7 @@ var inquirer = require('inquirer');
 var Suit = require('./src/suit');
 var Q = require('q');
 var program = require('commander');
+var _ = require('lodash');
 
 var getSuitName = function() {
     var defer = Q.defer();
@@ -19,11 +20,12 @@ var getSuitName = function() {
     return defer.promise;
 };
 
-var getFileRealPath = function(filepath) {
-    var fs = require('fs');
-    var path = require('path');
-    var fullpath = path.resolve(process.cwd(), filepath);
-    var defer = Q.defer();
+var getFileRealPath = function(basePath, filepath) {
+    var fs = require('fs'),
+        path = require('path'),
+        fullpath = path.resolve(basePath, filepath),
+        defer = Q.defer();
+
     fs.exists(fullpath, function(exist) {
         if (exist) {
             defer.resolve(fullpath);
@@ -33,6 +35,8 @@ var getFileRealPath = function(filepath) {
     });
     return defer.promise;
 };
+
+var getRelativePath = _.partial(getFileRealPath, process.cwd());
 
 var getSuit = function(suit) {
     return getSuitName().then(function(data) {
@@ -103,7 +107,7 @@ program.command('check <file>')
         var fullFilePath;
 
         // domain logic
-        getFileRealPath(file).then(function(filepath) {
+        getRelativePath(file).then(function(filepath) {
             if (filepath === false) {
                 throw new Error('File does not exist.');
             }
