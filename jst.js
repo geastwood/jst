@@ -5,6 +5,8 @@ var Suit = require('./src/suit');
 var Q = require('q');
 var program = require('commander');
 var _ = require('lodash');
+var util = require('./src/util');
+var library = require('./src/library');
 
 var getSuitName = function() {
     var defer = Q.defer();
@@ -20,24 +22,6 @@ var getSuitName = function() {
     return defer.promise;
 };
 
-var getFileRealPath = function(basePath, filepath) {
-    var fs = require('fs'),
-        path = require('path'),
-        fullpath = path.resolve(basePath, filepath),
-        defer = Q.defer();
-
-    fs.exists(fullpath, function(exist) {
-        if (exist) {
-            defer.resolve(fullpath);
-        } else {
-            defer.resolve(false);
-        }
-    });
-    return defer.promise;
-};
-
-var getRelativePath = _.partial(getFileRealPath, process.cwd());
-
 var getSuit = function(suit) {
     return getSuitName().then(function(data) {
         return data.suitName;
@@ -46,13 +30,6 @@ var getSuit = function(suit) {
     });
 };
 
-// TODO
-var addLib = function(folder) {
-    var wrench = require('wrench'), path = require('path'), fs = require('fs');
-    wrench.mkdirSyncRecursive(path.join(folder, 'vendor'));
-    var lodash = fs.readFileSync(path.join(__dirname, 'node_modules', 'lodash', 'index.js'), 'utf8');
-    fs.writeFileSync(path.join(folder, 'vendor', 'lodash.js'), lodash);
-};
 
 var runSuit = function(filepath, suit) {
     var fs = require('fs'),
@@ -69,7 +46,7 @@ var runSuit = function(filepath, suit) {
     wrench.copyDirSyncRecursive(path.join(__dirname, 'suit', suit.getPath()), targetPath);
     fs.writeFileSync(path.join(targetPath, 'check.js'), content);
 
-    addLib(targetPath);
+    library.add(targetPath);
 
     require('child_process').exec('nodeunit ' + path.join(targetPath, 'test'), function(stdin, stdout) {
         console.log(stdout);
@@ -81,22 +58,20 @@ var describeSuit = function(suit) {
     var fs = require('fs'),
         path = require('path'),
         filePath = path.join(__dirname, 'suit', suit.getPath(), 'description.txt'),
-        fileExist = fs.existsSync(filePath);
+        fileExistPromise = _.partial(util.fileExistPromise, '.');
 
-    if (fileExist) {
-        fs.readFile(filePath, 'utf8', function(err, data) {
-            if (err) {
-                throw err;
-            }
-            console.log('\n');
-            console.log(data);
-            console.log('\n');
-        });
-    } else {
-        console.log('\n');
-        console.log('No description for this test suit');
-        console.log('\n');
-    }
+    fileExistPromise(filePath).then(function(path) {
+        if (path === false) {
+            console.log('No description for this test suit');
+        } else {
+            fs.readFile(filePath, 'utf8', function(err, data) {
+                if (err) {
+                    throw err;
+                }
+                console.log(data);
+            });
+        }
+    });
 };
 
 program.command('check <file>')
@@ -104,7 +79,8 @@ program.command('check <file>')
     .option('-s --suit <suit>', 'specify suit') // currently not working
     .action(function(file, options) {
 
-        var fullFilePath;
+        var fullFilePath,
+            getRelativePath = _.partial(util.fileExistPromise, process.cwd());
 
         // domain logic
         getRelativePath(file).then(function(filepath) {
