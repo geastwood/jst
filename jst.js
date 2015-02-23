@@ -1,35 +1,10 @@
 #!/usr/bin/env node
 
-var inquirer = require('inquirer');
-var Suit = require('./src/suit');
-var Q = require('q');
+var SuitManager = require('./src/suitManager');
 var program = require('commander');
 var _ = require('lodash');
 var util = require('./src/util');
 var library = require('./src/library');
-
-var getSuitName = function() {
-    var defer = Q.defer();
-    inquirer.prompt([{
-        name: 'suitName',
-        type: 'list',
-        message: 'Select a suit name',
-        choices: Suit.getSuitNames()
-    }],
-    function(answers) {
-        defer.resolve(answers);
-    });
-    return defer.promise;
-};
-
-var getSuit = function(suit) {
-    return getSuitName().then(function(data) {
-        return data.suitName;
-    }).then(function(suitName) {
-        return Suit.getDefinition(suitName);
-    });
-};
-
 
 var runSuit = function(filepath, suit) {
     var fs = require('fs'),
@@ -57,7 +32,7 @@ var runSuit = function(filepath, suit) {
 var describeSuit = function(suit) {
     var fs = require('fs'),
         path = require('path'),
-        filePath = path.join(__dirname, 'suit', suit.getPath(), 'description.txt'),
+        filePath = path.join(__dirname, 'suit', suit.getDescriptionPath()),
         fileExistPromise = _.partial(util.fileExistPromise, '.');
 
     fileExistPromise(filePath).then(function(path) {
@@ -88,7 +63,7 @@ program.command('check <file>')
                 throw new Error('File does not exist.');
             }
             fullFilePath = filepath;
-            return getSuit(options.suit);
+            return SuitManager.getSuit(options.suit);
         }).then(function(suit) {
             runSuit(fullFilePath, suit);
         }).catch(function(err) {
@@ -97,9 +72,9 @@ program.command('check <file>')
     });
 
 program.command('describe')
-    .description('describe a suit, if it has a description.txt file')
+    .description('describe a suit, if it has a description.txt file.')
     .action(function() {
-        getSuit().then(function(suit) {
+        SuitManager.getSuit().then(function(suit) {
             describeSuit(suit);
         });
     });
