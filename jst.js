@@ -91,4 +91,28 @@ program.command('describe')
         });
     });
 
+// TODO
+program.command('develop')
+    .description('develop a suit, produce a src file that fulfills all test cases')
+    .action(function() {
+        SuitManager.getSuit().then(function(suit) {
+            // start watching
+            var fs = require('fs');
+            var path = require('path');
+            var srcFile = path.join(__dirname, 'suit', suit.getPath(), 'src.js');
+            console.log(srcFile);
+            var exec = require('child_process').exec;
+            console.log('Start watching:', srcFile);
+            fs.watchFile(srcFile, function() {
+                var targetPath = path.join(__dirname, 'suit', suit.getPath(), 'check.js');
+                var srcContent = fs.readFileSync(srcFile, 'utf8'); // every time read fresh content
+                fs.writeFileSync(targetPath, srcContent, 'utf8');
+                exec('nodeunit ' + path.join(__dirname, 'suit', suit.getPath(), 'test'), function(stdin, stdout) {
+                    console.log(stdout);
+                    fs.unlinkSync(targetPath);
+                });
+            });
+        });
+    });
+
 program.parse(process.argv);

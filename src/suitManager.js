@@ -4,6 +4,7 @@ var suits = require('./suits');
 var suit = require('./suit');
 var inquirer = require('inquirer');
 var Q = require('q');
+var path = require('path');
 
 module.exports = {
     getSuitName: function() {
