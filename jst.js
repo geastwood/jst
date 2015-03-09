@@ -115,4 +115,10 @@ program.command('develop')
         });
     });
 
+program.command('create')
+    .description('create a new suit')
+    .action(function() {
+        SuitManager.createSuit();
+    });
+
 program.parse(process.argv);

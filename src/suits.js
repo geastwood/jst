@@ -2,10 +2,14 @@
  * This class represents suits structure
  */
 var Q = require('q');
-var definition = require('../suit/suits.json');
+var fs = require('fs');
+var path = require('path');
 
+var getDefinition = function() {
+    return require('../suit/suits.json');
+};
 var getSuits = function() {
-    return definition.suits;
+    return getDefinition().suits;
 };
 
 var getSuitNames = function() {
@@ -33,5 +37,28 @@ var getByName = function(name) {
 module.exports = {
     getSuitNames: getSuitNames,
     getSuits: getSuits,
-    getByName: getByName
+    getByName: getByName,
+    exists: function(suit) {
+        return getSuits().some(function(def) {
+            return def.name === suit.name;
+        });
+    },
+    add: function(def) {
+        var defer = Q.defer();
+        var definition = getDefinition();
+
+        if (this.exists(def)) {
+            defer.reject(def.name + ' exists already.');
+        } else {
+            definition.suits.push(def);
+            fs.writeFile(path.join(__dirname, '../suit/suits.json'), JSON.stringify(definition, null, 4), function(err) {
+                if (err) {
+                    defer.reject(err)
+                }
+                defer.resolve('done');
+            });
+        }
+
+        return defer.promise;
+    }
 };

@@ -3,34 +3,67 @@
         {
             "name": "Capitalize",
             "description": "Write a function to capitalize a string",
-            "tag": ["string"],
+            "tag": [
+                "string"
+            ],
             "level": "Basic",
-            "author": ["Fei Liu"],
+            "author": [
+                "Fei Liu"
+            ],
             "path": "capitalize"
         },
         {
             "name": "splat",
             "description": "Write a splat function",
-            "tag": ["array"],
+            "tag": [
+                "array"
+            ],
             "level": "Basic",
-            "author": ["Fei Liu"],
+            "author": [
+                "Fei Liu"
+            ],
             "path": "splat"
         },
         {
             "name": "unsplat",
             "description": "Write a unsplat function",
-            "tag": ["array"],
+            "tag": [
+                "array"
+            ],
             "level": "Basic",
-            "author": ["Fei Liu"],
+            "author": [
+                "Fei Liu"
+            ],
             "path": "unsplat"
         },
         {
             "name": "contrary",
             "description": "A function that accepts a predicate and returns an predicate is contrary to original one",
-            "tag": ["function", "Predicate", "Closure"],
+            "tag": [
+                "function",
+                "Predicate",
+                "Closure"
+            ],
             "level": "Basic",
-            "author": ["Fei Liu"],
+            "author": [
+                "Fei Liu"
+            ],
             "path": "contrary"
+        },
+        {
+            "name": "fei",
+            "description": "fei",
+            "path": "fei"
+        },
+        {
+            "name": "test1",
+            "description": "this is test1",
+            "path": "test1"
+        },
+        {
+            "name": "test2",
+            "description": "tthis is test2",
+            "path": "test2"
         }
     ]
 }
